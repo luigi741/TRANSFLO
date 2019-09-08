@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:core';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
 	@override
@@ -11,6 +13,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+	var client = http.Client();
+	static const LatLng _center = const LatLng(27.918325, -82.341408);
+	int _selectedIndex = 0;
 	GoogleMapController googleMapController;
 	Geolocator geolocator = Geolocator();
 	Position userLocation;
@@ -19,9 +24,32 @@ class _MyHomePageState extends State<MyHomePage> {
 		target: LatLng(40.387019, -105.668516),
 		zoom: 5.0
 	);
-
-	static const LatLng _center = const LatLng(27.918325, -82.341408);
 	
+	// Make a POST request to the API to get truck stops
+	makeHTTP() async {
+		try {
+			var myLatLong = {
+				"lat": 27.918325,
+				"lng": -82.341408
+			};
+			String newObj = jsonEncode(myLatLong);
+			var response = await client.post(
+				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/10',
+				body: newObj,
+				headers: {
+					"Authorization": "Basic amNhdGFsYW5AdHJhbnNmbG8uY29tOnJMVGR6WmdVTVBYbytNaUp6RlIxTStjNmI1VUI4MnFYcEVKQzlhVnFWOEF5bUhaQzdIcjVZc3lUMitPTS9paU8=",
+					"Content-Type": "application/json"
+				}
+			);
+			print('Response status: ${response.statusCode}');
+			print('Response body: ${response.body}');
+		} 
+		catch (e) {
+			print(e);
+		}
+	}
+
+	// Use geolocation to get initial position upon app startup
 	Future<Position> initialPosition() async {
 		Position currentLocation;
 		try {
@@ -36,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		return currentLocation;
 	}
 
+	// Get user's location
 	getMyLocation(double lat, double long) {
 		print('getMyLocation()');
 		googleMapController.animateCamera(CameraUpdate.newCameraPosition(
@@ -46,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		));
 	}
 
+	// List of markers that will show up on the map
 	Set<Marker> myMarkers = Set.from([
 		Marker(
 			markerId: MarkerId('myLocation'),
@@ -54,20 +84,21 @@ class _MyHomePageState extends State<MyHomePage> {
 		)
 	]);
 
+	// Create an instance of a Google Map
 	void _onMapCreated(controller) {
 		setState(() {
 			googleMapController = controller;
 		});
 	}
 
-	int _selectedIndex = 0;
-
+	// Bottom navigation bar
 	void _onItemTapped(int index) {
 		setState(() {
 			_selectedIndex = index;
 		});
 	}
 
+	// Reset camera to the initial position
 	resetCamera() {
 		print('resetCamera()');
 		googleMapController.animateCamera(CameraUpdate.newCameraPosition(
@@ -76,6 +107,27 @@ class _MyHomePageState extends State<MyHomePage> {
 				zoom: 15.0
 			)
 		));
+	}
+
+	// Get user's coordinates
+	Future<Position> userLatLong() async {
+		Position myLatLong;
+		try {
+			myLatLong = await geolocator.getCurrentPosition(
+				desiredAccuracy: LocationAccuracy.best
+			);
+		}
+		catch(e) {
+			print(e);
+			myLatLong = null;
+		}
+		return myLatLong;
+	}
+
+	// Calculate 100-mile radius in degrees lat and long
+	calcRadius() async {
+		Position x = await userLatLong();
+		print(x);
 	}
 
 	@override
@@ -95,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
 						alignment: Alignment.center,
 					),
 					IconButton(
-						onPressed: () {},
+						onPressed: makeHTTP,
 						icon: Icon(Icons.search),
 						alignment: Alignment.center,
 					)
@@ -107,6 +159,12 @@ class _MyHomePageState extends State<MyHomePage> {
 					target: _center,
 					zoom: 11.0
 				),
+				/*cameraTargetBounds: CameraTargetBounds(
+					LatLngBounds(
+						southwest: LatLng(21.0, 31.0),
+						northeast: LatLng()
+					)
+				),*/
 				markers: myMarkers
 			),
 			bottomNavigationBar: BottomNavigationBar(
@@ -126,6 +184,11 @@ class _MyHomePageState extends State<MyHomePage> {
 				],
 				onTap: _onItemTapped,
 				currentIndex: _selectedIndex,
+			),
+			floatingActionButton: FloatingActionButton(
+				onPressed: calcRadius,
+				child: Icon(Icons.add),
+				backgroundColor: Colors.indigo,
 			),
 		);
 	}
