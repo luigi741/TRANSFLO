@@ -1,6 +1,6 @@
-# transflo
+# TRANSFLO
 
-A new Flutter project.
+Using Google Maps and Flutter to display points of interest on a map and add other map functionality
 
 ## Getting Started
 
