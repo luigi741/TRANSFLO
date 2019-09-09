@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_permissions/location_permissions.dart';
 
 class MyHomePage extends StatefulWidget {
 	@override
@@ -125,9 +126,45 @@ class _MyHomePageState extends State<MyHomePage> {
 	}
 
 	// Calculate 100-mile radius in degrees lat and long
-	calcRadius() async {
-		Position x = await userLatLong();
-		print(x);
+	// 1 deg. lat/long = ~69 miles
+	checkLocationServices() async {
+		var myServiceStatus = await checkLocServices();
+		print(myServiceStatus.toString());
+
+		ServiceStatus serviceStatus = await checkServiceStatus();
+		print(serviceStatus);
+
+		if (serviceStatus == ServiceStatus.disabled) {
+			print('Location services are currently disabled! Opening app settings...');
+			openAppSettings();
+		}
+		else {
+			print('Location services are enabled!');
+			Position position = await userLatLong();
+			print(position);
+		}
+	}
+
+	// If location services are turned off, then request to be turned on and
+	// open app settings
+	Future<bool> openAppSettings() async {
+		bool isOpened = await LocationPermissions().openAppSettings();
+		return isOpened;
+	}
+
+	checkLocServices() async {
+		PermissionStatus serviceStatus = await LocationPermissions().checkPermissionStatus();
+		return serviceStatus;
+	}
+
+	turnOnLocations() async {
+		bool isShown = await LocationPermissions().shouldShowRequestPermissionRationale();
+		return isShown;
+	}
+
+	checkServiceStatus() async {
+		ServiceStatus serviceStatus = await LocationPermissions().checkServiceStatus();
+		return serviceStatus;
 	}
 
 	@override
@@ -186,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
 				currentIndex: _selectedIndex,
 			),
 			floatingActionButton: FloatingActionButton(
-				onPressed: calcRadius,
+				onPressed: checkLocationServices,
 				child: Icon(Icons.add),
 				backgroundColor: Colors.indigo,
 			),
