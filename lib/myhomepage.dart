@@ -126,13 +126,11 @@ class _MyHomePageState extends State<MyHomePage> {
 	}
 
 	// Calculate 100-mile radius in degrees lat and long
-	// 1 deg. lat/long = ~69 miles
+	// 1 deg. lat/long = ~69 miles => 1.45 deg. ~= 100 miles
+	// Radius ~= 0.725 | Diameter ~= 1.450
+	// 35.3553
 	checkLocationServices() async {
-		var myServiceStatus = await checkLocServices();
-		print(myServiceStatus.toString());
-
 		ServiceStatus serviceStatus = await checkServiceStatus();
-		print(serviceStatus);
 
 		if (serviceStatus == ServiceStatus.disabled) {
 			print('Location services are currently disabled! Opening app settings...');
@@ -142,8 +140,32 @@ class _MyHomePageState extends State<MyHomePage> {
 			print('Location services are enabled!');
 			Position position = await userLatLong();
 			print(position);
+
+			double deltaL = 0.72464;
+
+			double latNE = position.latitude + deltaL;
+			double lngNE = position.longitude + deltaL;
+
+			double latSW = position.latitude - deltaL;
+			double lngSW = position.longitude - deltaL;
+
+			print('NE Coordinates => Lat: $latNE | Long: $lngNE');
+			print('SW Coordinates => Lat: $latSW | Long: $lngSW');
+
+			// deltaL = 0.72464
+			// NE => - deltaL latitude | + deltaL longitude
+			// SW => + deltaL latitude | - deltaL longitude
+
+			LatLng boundNE = new LatLng(latNE, lngNE);
+			LatLng boundSW = new LatLng(latSW, lngSW);
+
+			googleMapController.animateCamera(
+				CameraUpdate.newLatLngBounds(LatLngBounds(northeast: boundNE, southwest: boundSW), 0)
+			);
 		}
 	}
+	//==============================================================================================
+	// Location services and permissions
 
 	// If location services are turned off, then request to be turned on and
 	// open app settings
@@ -166,6 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		ServiceStatus serviceStatus = await LocationPermissions().checkServiceStatus();
 		return serviceStatus;
 	}
+	//==============================================================================================
 
 	@override
 	Widget build(BuildContext context) {
