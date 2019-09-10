@@ -8,6 +8,10 @@
 .buildlog/
 .history
 .svn/
+.env
+
+# Android Manifest which contains Google Maps API Key
+**/android/app/src/main/AndroidManifest.xml
 
 # IntelliJ related
 *.iml
