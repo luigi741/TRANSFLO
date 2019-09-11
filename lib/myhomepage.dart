@@ -18,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
 	static const LatLng _center = const LatLng(27.918325, -82.341408);
 	int _selectedIndex = 0;
 	GoogleMapController googleMapController;
+	MapType _currentMapType = MapType.normal;
 	Geolocator geolocator = Geolocator();
 	Position userLocation;
 	CameraUpdate cameraUpdate;
@@ -189,6 +190,15 @@ class _MyHomePageState extends State<MyHomePage> {
 		return serviceStatus;
 	}
 	//==============================================================================================
+	// Toggle map view e.g. Satellite or Street
+	void _terrainButtonPressed() {
+		print('_terrainButtonPressed()');
+		setState(() {
+			_currentMapType = _currentMapType == MapType.normal
+				? MapType.satellite
+				: MapType.normal;
+		});
+	}
 
 	@override
 	Widget build(BuildContext context) {
@@ -213,19 +223,41 @@ class _MyHomePageState extends State<MyHomePage> {
 					)
 				],
 			),
-			body: GoogleMap(
-				onMapCreated: _onMapCreated,
-				initialCameraPosition: CameraPosition(
-					target: _center,
-					zoom: 11.0
-				),
-				/*cameraTargetBounds: CameraTargetBounds(
-					LatLngBounds(
-						southwest: LatLng(21.0, 31.0),
-						northeast: LatLng()
+			body: Stack(
+				children: <Widget>[
+					GoogleMap(
+						onMapCreated: _onMapCreated,
+						initialCameraPosition: CameraPosition(
+							target: _center,
+							zoom: 11.0
+						),
+						markers: myMarkers,
+						mapType: _currentMapType,
+					),
+					Column(
+						mainAxisAlignment: MainAxisAlignment.end,
+						children: <Widget>[
+							Container(
+								padding: EdgeInsets.only(left: 5.0),
+								child: FloatingActionButton(
+									mini: true,
+									onPressed: _terrainButtonPressed,
+									child: Icon(Icons.map),
+									backgroundColor: Colors.indigo
+								),
+							),
+							Container(
+								padding: EdgeInsets.only(left: 5.0, bottom: 5.0),
+								child: FloatingActionButton(
+									mini: true,
+									onPressed: checkLocationServices,
+									child: Icon(Icons.zoom_out),
+									backgroundColor: Colors.indigo
+								),
+							),
+						],
 					)
-				),*/
-				markers: myMarkers
+				],
 			),
 			bottomNavigationBar: BottomNavigationBar(
 				items: <BottomNavigationBarItem>[
@@ -244,12 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
 				],
 				onTap: _onItemTapped,
 				currentIndex: _selectedIndex,
-			),
-			floatingActionButton: FloatingActionButton(
-				onPressed: checkLocationServices,
-				child: Icon(Icons.add),
-				backgroundColor: Colors.indigo,
-			),
+			)
 		);
 	}
 }
