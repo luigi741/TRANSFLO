@@ -26,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
 	Geolocator geolocator = Geolocator();
 	Position userLocation;
 	CameraUpdate cameraUpdate;
+	StopsAPI responseAPI;
 	CameraPosition cameraPosition = new CameraPosition(
 		target: LatLng(40.387019, -105.668516),
 		zoom: 5.0
@@ -40,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
 			};
 			String newObj = jsonEncode(myLatLong);
 			var response = await client.post(
-				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/0',
+				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/10',
 				body: newObj,
 				headers: {
 					"Authorization": "Basic amNhdGFsYW5AdHJhbnNmbG8uY29tOnJMVGR6WmdVTVBYbytNaUp6RlIxTStjNmI1VUI4MnFYcEVKQzlhVnFWOEF5bUhaQzdIcjVZc3lUMitPTS9paU8=",
@@ -48,16 +49,52 @@ class _MyHomePageState extends State<MyHomePage> {
 				}
 			);
 			print('Response status: ${response.statusCode}');
-			// print('Response body: ${response.body}');
+			// print('Response body: ${response.body}\n\n');
 
-			var resJSON = response.body;
-			var parsedJSON = json.decode(resJSON);
-			// var arrayJSON = 
+			List<StopsAPI> stopsList;
+			var data = json.decode(response.body);
+			var rest = data['truckStops'] as List;
+
+			print('$rest\n\n');
+			stopsList = rest.map<StopsAPI>((json) => StopsAPI.fromJson(json)).toList();
+			
+			updateMarkers(rest);
+
+			// for (int i = 0; i < rest.length; i++) {
+			// 	print('Lat: ${rest[i]['lat']} | Long: ${rest[i]['lat']}');
+			// }
 		} 
 		catch (e) {
 			print(e);
 		}
 	}
+
+	updateMarkers(List list) {
+		print('updateMarkers()');
+		for (int i = 0; i < list.length; i++) {
+			print('Lat: ${list[i]['lat']} | Long: ${list[i]['lat']}');
+
+			LatLng temp = new LatLng(double.parse(list[i]['lat']), double.parse(list[i]['lng']));
+
+			setState(() {
+				myMarkers.add(
+					Marker(
+						markerId: MarkerId('${list[i]['name']}'),
+						icon: BitmapDescriptor.defaultMarker,
+						position: temp
+					)
+				);
+			});
+		}
+	}
+
+	// Set<Marker> myMarkers = Set.from([
+	// 	Marker(
+	// 		markerId: MarkerId('myLocation'),
+	// 		icon: BitmapDescriptor.defaultMarker,
+	// 		position: _center
+	// 	)
+	// ]);
 
 	// Use geolocation to get initial position upon app startup
 	Future<Position> initialPosition() async {
