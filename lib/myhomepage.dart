@@ -2,11 +2,15 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:async';
 
+import './stopsapi.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_permissions/location_permissions.dart';
+// import 'package:localstorage/localstorage.dart';
+
 
 class MyHomePage extends StatefulWidget {
 	@override
@@ -36,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
 			};
 			String newObj = jsonEncode(myLatLong);
 			var response = await client.post(
-				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/10',
+				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/0',
 				body: newObj,
 				headers: {
 					"Authorization": "Basic amNhdGFsYW5AdHJhbnNmbG8uY29tOnJMVGR6WmdVTVBYbytNaUp6RlIxTStjNmI1VUI4MnFYcEVKQzlhVnFWOEF5bUhaQzdIcjVZc3lUMitPTS9paU8=",
@@ -44,7 +48,11 @@ class _MyHomePageState extends State<MyHomePage> {
 				}
 			);
 			print('Response status: ${response.statusCode}');
-			print('Response body: ${response.body}');
+			// print('Response body: ${response.body}');
+
+			var resJSON = response.body;
+			var parsedJSON = json.decode(resJSON);
+			// var arrayJSON = 
 		} 
 		catch (e) {
 			print(e);
