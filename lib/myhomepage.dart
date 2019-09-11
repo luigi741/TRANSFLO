@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
 			};
 			String newObj = jsonEncode(myLatLong);
 			var response = await client.post(
-				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/10',
+				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/20',
 				body: newObj,
 				headers: {
 					"Authorization": "Basic amNhdGFsYW5AdHJhbnNmbG8uY29tOnJMVGR6WmdVTVBYbytNaUp6RlIxTStjNmI1VUI4MnFYcEVKQzlhVnFWOEF5bUhaQzdIcjVZc3lUMitPTS9paU8=",
@@ -59,10 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
 			stopsList = rest.map<StopsAPI>((json) => StopsAPI.fromJson(json)).toList();
 			
 			updateMarkers(rest);
-
-			// for (int i = 0; i < rest.length; i++) {
-			// 	print('Lat: ${rest[i]['lat']} | Long: ${rest[i]['lat']}');
-			// }
 		} 
 		catch (e) {
 			print(e);
@@ -282,6 +278,15 @@ class _MyHomePageState extends State<MyHomePage> {
 					Column(
 						mainAxisAlignment: MainAxisAlignment.end,
 						children: <Widget>[
+							Container(
+								padding: EdgeInsets.only(left: 5.0),
+								child: FloatingActionButton(
+									mini: true,
+									onPressed: _terrainButtonPressed,
+									child: Icon(Icons.clear_all),
+									backgroundColor: Colors.indigo
+								),
+							),
 							Container(
 								padding: EdgeInsets.only(left: 5.0),
 								child: FloatingActionButton(
