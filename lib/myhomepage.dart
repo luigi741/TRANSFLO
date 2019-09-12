@@ -76,7 +76,12 @@ class _MyHomePageState extends State<MyHomePage> {
 					Marker(
 						markerId: MarkerId('${list[i]['name']}'),
 						icon: BitmapDescriptor.defaultMarker,
-						position: temp
+						position: temp,
+						onTap: _showDialog,
+						infoWindow: InfoWindow(
+							title: '${list[i]['name']}',
+							snippet: '${list[i]['rawLine1']}'
+						),
 					)
 				);
 			});
@@ -109,10 +114,14 @@ class _MyHomePageState extends State<MyHomePage> {
 		));
 	}
 
-	clearMarkers() {
+	void clearMarkers() {
 		setState(() {
 			myMarkers.clear();
 		});
+	}
+
+	static void _showDialog() {
+		print('Marker tapped!');
 	}
 
 	// List of markers that will show up on the map
@@ -120,7 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
 		Marker(
 			markerId: MarkerId('myLocation'),
 			icon: BitmapDescriptor.defaultMarker,
-			position: _center
+			position: _center,
+			onTap: _showDialog,
 		)
 	]);
 
