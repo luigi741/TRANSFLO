@@ -9,8 +9,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_permissions/location_permissions.dart';
-// import 'package:localstorage/localstorage.dart';
-
 
 class MyHomePage extends StatefulWidget {
 	@override
@@ -41,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
 			};
 			String newObj = jsonEncode(myLatLong);
 			var response = await client.post(
-				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/20',
+				'http://webapp.transflodev.com/svc1.transflomobile.com/api/v3/stations/100',
 				body: newObj,
 				headers: {
 					"Authorization": "Basic amNhdGFsYW5AdHJhbnNmbG8uY29tOnJMVGR6WmdVTVBYbytNaUp6RlIxTStjNmI1VUI4MnFYcEVKQzlhVnFWOEF5bUhaQzdIcjVZc3lUMitPTS9paU8=",
@@ -65,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		}
 	}
 
+	// Update markers on map based of data fetched from API
 	updateMarkers(List list) {
 		print('updateMarkers()');
 		for (int i = 0; i < list.length; i++) {
@@ -83,14 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
 			});
 		}
 	}
-
-	// Set<Marker> myMarkers = Set.from([
-	// 	Marker(
-	// 		markerId: MarkerId('myLocation'),
-	// 		icon: BitmapDescriptor.defaultMarker,
-	// 		position: _center
-	// 	)
-	// ]);
 
 	// Use geolocation to get initial position upon app startup
 	Future<Position> initialPosition() async {
@@ -118,6 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
 		));
 	}
 
+	clearMarkers() {
+		setState(() {
+			myMarkers.clear();
+		});
+	}
+
 	// List of markers that will show up on the map
 	Set<Marker> myMarkers = Set.from([
 		Marker(
@@ -134,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		});
 	}
 
-	// Bottom navigation bar
+	// Bottom navigation bar tap even handler
 	void _onItemTapped(int index) {
 		setState(() {
 			_selectedIndex = index;
@@ -282,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
 								padding: EdgeInsets.only(left: 5.0),
 								child: FloatingActionButton(
 									mini: true,
-									onPressed: _terrainButtonPressed,
+									onPressed: clearMarkers,
 									child: Icon(Icons.clear_all),
 									backgroundColor: Colors.indigo
 								),
