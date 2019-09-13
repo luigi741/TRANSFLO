@@ -32,10 +32,11 @@ class _MyHomePageState extends State<MyHomePage> {
 	
 	// Make a POST request to the API to get truck stops
 	makeHTTP() async {
+		Position currLoc = await initialPosition();
 		try {
 			var myLatLong = {
-				"lat": 27.918325,
-				"lng": -82.341408
+				"lat": currLoc.latitude,
+				"lng": currLoc.longitude
 			};
 			String newObj = jsonEncode(myLatLong);
 			var response = await client.post(
@@ -99,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
 			currentLocation = null;
 		}
 		print(currentLocation);
-		getMyLocation(currentLocation.latitude, currentLocation.longitude);
+		// getMyLocation(currentLocation.latitude, currentLocation.longitude);
 		return currentLocation;
 	}
 
