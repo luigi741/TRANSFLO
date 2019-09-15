@@ -255,6 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
 		LatLngBounds latLngBounds = await googleMapController.getVisibleRegion();
 		print(latLngBounds.northeast.toString());
 		print(latLngBounds.southwest.toString());
+		return latLngBounds;
 	}
 
 	@override
