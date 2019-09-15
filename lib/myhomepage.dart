@@ -48,7 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
 				}
 			);
 			print('Response status: ${response.statusCode}');
-			// print('Response body: ${response.body}\n\n');
 
 			List<StopsAPI> stopsList;
 			var data = json.decode(response.body);
@@ -126,14 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
 	}
 
 	// List of markers that will show up on the map
-	Set<Marker> myMarkers = Set.from([
-		Marker(
-			markerId: MarkerId('myLocation'),
-			icon: BitmapDescriptor.defaultMarker,
-			position: _center,
-			onTap: _showDialog,
-		)
-	]);
+	Set<Marker> myMarkers = Set.from([]);
 
 	// Create an instance of a Google Map
 	void _onMapCreated(controller) {
@@ -144,6 +136,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
 	// Bottom navigation bar tap even handler
 	void _onItemTapped(int index) {
+		if (index == 1) {
+			print('List Tapped.');
+			getVisibleRegion();
+		}
+
 		setState(() {
 			_selectedIndex = index;
 		});
@@ -249,6 +246,17 @@ class _MyHomePageState extends State<MyHomePage> {
 		});
 	}
 
+	// When camera stops moving - use the callback to update markers
+	void mapCameraIdle() {
+		print('Map Camera is Idle!');
+	}
+
+	Future<LatLngBounds> getVisibleRegion() async {
+		LatLngBounds latLngBounds = await googleMapController.getVisibleRegion();
+		print(latLngBounds.northeast.toString());
+		print(latLngBounds.southwest.toString());
+	}
+
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
@@ -282,6 +290,9 @@ class _MyHomePageState extends State<MyHomePage> {
 						),
 						markers: myMarkers,
 						mapType: _currentMapType,
+						myLocationButtonEnabled: true,
+						myLocationEnabled: true,
+						onCameraIdle: mapCameraIdle,
 					),
 					Column(
 						mainAxisAlignment: MainAxisAlignment.end,
@@ -325,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
 					),
 					BottomNavigationBarItem(
 						icon: Icon(Icons.list),
-						title: Text('List')
+						title: Text('List'),
 					),
 					BottomNavigationBarItem(
 						icon: Icon(Icons.history),
