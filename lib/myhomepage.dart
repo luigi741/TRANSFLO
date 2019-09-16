@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
 	updateMarkers(List list) {
 		print('updateMarkers()');
 		for (int i = 0; i < list.length; i++) {
-			print('Lat: ${list[i]['lat']} | Long: ${list[i]['lat']}');
+			print('Lat: ${list[i]['lat']} | Long: ${list[i]['lng']}');
 
 			LatLng temp = new LatLng(double.parse(list[i]['lat']), double.parse(list[i]['lng']));
 
