@@ -275,18 +275,20 @@ class _MyHomePageState extends State<MyHomePage> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: Text('TRANSFLO'),
+				leading: Image.asset('assets/images/aaa-logo-whiteff.png'),
+				title: Text('ERS Dispatcher'),
+				centerTitle: true,
 				actions: <Widget>[
-					IconButton(
-						onPressed: initialPosition,
-						icon: Icon(Icons.my_location),
-						alignment: Alignment.center,
-					),
-					IconButton(
-						onPressed: resetCamera,
-						icon: Icon(Icons.add_location),
-						alignment: Alignment.center,
-					),
+					// IconButton(
+					// 	onPressed: initialPosition,
+					// 	icon: Icon(Icons.my_location),
+					// 	alignment: Alignment.center,
+					// ),
+					// IconButton(
+					// 	onPressed: resetCamera,
+					// 	icon: Icon(Icons.add_location),
+					// 	alignment: Alignment.center,
+					// ),
 					IconButton(
 						onPressed: makeHTTP,
 						icon: Icon(Icons.search),
@@ -317,7 +319,7 @@ class _MyHomePageState extends State<MyHomePage> {
 									mini: true,
 									onPressed: clearMarkers,
 									child: Icon(Icons.clear_all),
-									backgroundColor: Colors.indigo
+									backgroundColor: Color(0xFF003893)
 								),
 							),
 							Container(
@@ -326,7 +328,7 @@ class _MyHomePageState extends State<MyHomePage> {
 									mini: true,
 									onPressed: _terrainButtonPressed,
 									child: Icon(Icons.map),
-									backgroundColor: Colors.indigo
+									backgroundColor: Color(0xFF003893)
 								),
 							),
 							Container(
@@ -335,7 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
 									mini: true,
 									onPressed: checkLocationServices,
 									child: Icon(Icons.zoom_out),
-									backgroundColor: Colors.indigo
+									backgroundColor: Color(0xFF003893)
 								),
 							),
 						],
