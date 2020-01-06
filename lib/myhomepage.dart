@@ -275,7 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				leading: Image.asset('assets/images/aaa-logo-whiteff.png'),
+				leading: Image.asset('assets/images/aaa-logo-white.png'),
 				title: Text('ERS Dispatcher'),
 				centerTitle: true,
 				actions: <Widget>[
