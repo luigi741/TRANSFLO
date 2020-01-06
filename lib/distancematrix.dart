@@ -12,4 +12,8 @@ class DistanceMatrix {
 		this.destinations,
 		key
 	});
+
+	getURL() {
+		return apiURL;
+	}
 }

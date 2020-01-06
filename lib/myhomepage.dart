@@ -3,6 +3,7 @@ import 'dart:core';
 import 'dart:async';
 
 import './stopsapi.dart';
+import './distancematrix.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -98,8 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
 			print(e);
 			currentLocation = null;
 		}
-		print(currentLocation);
-		// getMyLocation(currentLocation.latitude, currentLocation.longitude);
 		return currentLocation;
 	}
 
@@ -135,10 +134,24 @@ class _MyHomePageState extends State<MyHomePage> {
 	}
 
 	// Bottom navigation bar tap even handler
-	void _onItemTapped(int index) {
-		if (index == 1) {
-			print('List Tapped.');
-			getVisibleRegion();
+	Future _onItemTapped(int index) async {
+		switch (index) {
+			case 0: 
+				print('Home Tapped.');
+				break;
+			case 1:
+				print('List Tapped.');
+				getVisibleRegion();
+				break;
+			case 2:
+				print('History Tapped.');
+				Position myLocation = await userLatLong();
+				DistanceMatrix distanceMatrixCall = new DistanceMatrix(
+					origins: '${myLocation.latitude}|${myLocation.longitude}',
+					destinations: '${myMarkers.first.position.latitude}|${myMarkers.first.position.latitude}'
+				);
+				print(distanceMatrixCall);
+				break;
 		}
 
 		setState(() {
