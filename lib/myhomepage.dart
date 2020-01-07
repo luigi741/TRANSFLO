@@ -6,6 +6,7 @@ import './stopsapi.dart';
 import './distancematrix.dart';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -275,7 +276,10 @@ class _MyHomePageState extends State<MyHomePage> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				leading: Image.asset('assets/images/aaa-logo-white.png'),
+				leading: Container(
+					padding: EdgeInsets.only(left: 5.0),
+					child: Image.asset('assets/images/aaa-logo-white.png'),
+				),
 				title: Text('ERS Dispatcher'),
 				centerTitle: true,
 				actions: <Widget>[
@@ -291,7 +295,7 @@ class _MyHomePageState extends State<MyHomePage> {
 					// ),
 					IconButton(
 						onPressed: makeHTTP,
-						icon: Icon(Icons.search),
+						icon: Icon(FontAwesomeIcons.searchLocation),
 						alignment: Alignment.center,
 					)
 				],
@@ -347,15 +351,15 @@ class _MyHomePageState extends State<MyHomePage> {
 			bottomNavigationBar: BottomNavigationBar(
 				items: <BottomNavigationBarItem>[
 					BottomNavigationBarItem(
-						icon: Icon(Icons.home),
-						title: Text('Home')
+						icon: Icon(FontAwesomeIcons.globeAmericas),
+						title: Text('Map')
 					),
 					BottomNavigationBarItem(
-						icon: Icon(Icons.list),
+						icon: Icon(FontAwesomeIcons.thList),
 						title: Text('List'),
 					),
 					BottomNavigationBarItem(
-						icon: Icon(Icons.history),
+						icon: Icon(FontAwesomeIcons.history),
 						title: Text('History')
 					)
 				],
